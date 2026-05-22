@@ -813,6 +813,137 @@ body {
 }
 
 /* =========================================================
+   Portfolio Breakdown Tab
+   ========================================================= */
+
+/* Two large split cards — Enterprise vs MM/Corp/Others */
+.portfolio-split-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.portfolio-split-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 24px 22px;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--neutral-200);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.portfolio-split-card--enterprise { border-top: 3px solid var(--green-500); }
+.portfolio-split-card--other      { border-top: 3px solid #6366f1; }
+
+.portfolio-split-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--neutral-500);
+}
+
+.portfolio-split-value {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--neutral-900);
+  line-height: 1;
+}
+
+.portfolio-split-sub {
+  font-size: 13px;
+  color: var(--neutral-400);
+}
+
+.portfolio-split-bar-track {
+  height: 6px;
+  background: var(--neutral-200);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.portfolio-split-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+.portfolio-split-bar-fill--enterprise { background: var(--green-500); }
+.portfolio-split-bar-fill--other      { background: #6366f1; }
+
+/* Segment detail breakdown */
+.portfolio-detail-grid {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--neutral-200);
+}
+
+.portfolio-detail-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--neutral-500);
+  margin-bottom: 14px;
+}
+
+.portfolio-detail-rows { display: flex; flex-direction: column; gap: 10px; }
+
+.portfolio-detail-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 60px 46px;
+  align-items: center;
+  gap: 12px;
+}
+
+.portfolio-detail-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neutral-700);
+}
+
+.portfolio-detail-bar-track {
+  height: 8px;
+  background: var(--neutral-100);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.portfolio-detail-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.portfolio-detail-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--neutral-800);
+  text-align: right;
+}
+
+.portfolio-detail-pct {
+  font-size: 12px;
+  color: var(--neutral-400);
+  text-align: right;
+}
+
+.portfolio-detail-row--total {
+  border-top: 1px solid var(--neutral-200);
+  padding-top: 10px;
+  margin-top: 2px;
+}
+.portfolio-detail-row--total .portfolio-detail-name { color: var(--neutral-900); }
+.portfolio-detail-row--total .portfolio-detail-count { color: var(--neutral-900); font-size: 14px; }
+.portfolio-detail-row--total .portfolio-detail-pct   { color: var(--neutral-600, var(--neutral-700)); font-weight: 600; }
+
+/* =========================================================
    Responsive
    ========================================================= */
 @media (max-width: 700px) {
@@ -831,4 +962,6 @@ body {
   .gcr-card-right { align-items: flex-start; min-width: 0; width: 100%; }
   .gcr-bar-track { width: 100%; }
   .picker-main { align-items: flex-start; padding-top: 32px; }
+  .portfolio-split-cards { grid-template-columns: 1fr; }
+  .portfolio-detail-row { grid-template-columns: 100px 1fr 50px 40px; gap: 8px; }
 }

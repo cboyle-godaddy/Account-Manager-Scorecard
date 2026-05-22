@@ -51,6 +51,7 @@
       <div class="tab-nav">
         <button class="tab-btn tab-btn--active" data-tab="current">Current Month</button>
         <button class="tab-btn" data-tab="history">Historical View</button>
+        <button class="tab-btn" data-tab="portfolio">Portfolio Breakdown</button>
       </div>
     </div>
 
@@ -157,6 +158,29 @@
         </section>
 
       </div>
+
+      <!-- Portfolio Breakdown Tab -->
+      <div class="tab-panel" id="tab-portfolio" style="display:none;">
+
+        <section class="section">
+          <h2 class="section-title">Current Month <span class="section-title-note" id="portfolio-month-label"></span></h2>
+          <div class="portfolio-split-cards" id="portfolio-split-cards">
+            <!-- Injected by JS -->
+          </div>
+          <div class="portfolio-detail-grid" id="portfolio-detail-grid">
+            <!-- Injected by JS -->
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Portfolio Breakdown <span class="section-title-note">— last 6 months</span></h2>
+          <div class="chart-card chart-card--wide">
+            <canvas id="chart-portfolio-history" height="200"></canvas>
+          </div>
+        </section>
+
+      </div>
+
     </main>
   </div>
 

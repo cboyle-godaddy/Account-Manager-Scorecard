@@ -46,9 +46,11 @@ async function init() {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-btn--active'));
       btn.classList.add('tab-btn--active');
       const tab = btn.dataset.tab;
-      document.getElementById('tab-current').style.display  = tab === 'current' ? '' : 'none';
-      document.getElementById('tab-history').style.display  = tab === 'history' ? '' : 'none';
-      if (tab === 'history') renderHistory(am);
+      document.getElementById('tab-current').style.display   = tab === 'current'   ? '' : 'none';
+      document.getElementById('tab-history').style.display   = tab === 'history'   ? '' : 'none';
+      document.getElementById('tab-portfolio').style.display = tab === 'portfolio' ? '' : 'none';
+      if (tab === 'history')   renderHistory(am);
+      if (tab === 'portfolio') renderPortfolioBreakdown(am);
     });
   });
 
@@ -551,6 +553,147 @@ function paceStatusKey(actual, target, daysCompleted, daysTotal) {
   if (ratio >= 1.0) return 'ok';
   if (ratio >= 0.8) return 'risk';
   return 'behind';
+}
+
+// ---- Portfolio Breakdown Tab ----
+function renderPortfolioBreakdown(am) {
+  const monthData = perfData.monthly[currentMonth];
+  const d = monthData?.[currentAmId];
+  if (!d || d.ent == null) return;
+
+  const isPartial = !!monthData.working_days_completed;
+  const label = formatMonthLabel(currentMonth) + (isPartial ? ' (MTD)' : '');
+  document.getElementById('portfolio-month-label').textContent = '— ' + label;
+
+  const entCount   = d.ent;
+  const otherGroup = d.mm + d.corp + d.other;
+  const total      = entCount + otherGroup;
+  const entPct     = ((entCount / total) * 100).toFixed(1);
+  const otherPct   = ((otherGroup / total) * 100).toFixed(1);
+
+  // Split cards
+  document.getElementById('portfolio-split-cards').innerHTML = `
+    <div class="portfolio-split-card portfolio-split-card--enterprise">
+      <div class="portfolio-split-label">Enterprise</div>
+      <div class="portfolio-split-value">${entCount.toLocaleString()}</div>
+      <div class="portfolio-split-sub">${entPct}% of portfolio</div>
+      <div class="portfolio-split-bar-track">
+        <div class="portfolio-split-bar-fill portfolio-split-bar-fill--enterprise" style="width:${entPct}%"></div>
+      </div>
+    </div>
+    <div class="portfolio-split-card portfolio-split-card--other">
+      <div class="portfolio-split-label">Mid-Market, Corporate &amp; Others</div>
+      <div class="portfolio-split-value">${otherGroup.toLocaleString()}</div>
+      <div class="portfolio-split-sub">${otherPct}% of portfolio</div>
+      <div class="portfolio-split-bar-track">
+        <div class="portfolio-split-bar-fill portfolio-split-bar-fill--other" style="width:${otherPct}%"></div>
+      </div>
+    </div>
+  `;
+
+  // Detail breakdown (all four segments)
+  const segments = [
+    { label: 'Enterprise',   value: d.ent,  color: 'var(--green-600)' },
+    { label: 'Mid-Market',   value: d.mm,   color: 'var(--blue-500, #3b82f6)' },
+    { label: 'Corporate',    value: d.corp, color: 'var(--indigo-500, #6366f1)' },
+    { label: 'Others',       value: d.other,color: 'var(--neutral-400)' },
+  ];
+  document.getElementById('portfolio-detail-grid').innerHTML = `
+    <div class="portfolio-detail-header">Segment breakdown</div>
+    <div class="portfolio-detail-rows">
+      ${segments.map(s => {
+        const pct = ((s.value / total) * 100).toFixed(1);
+        const barW = Math.min((s.value / total) * 100, 100);
+        return `
+          <div class="portfolio-detail-row">
+            <span class="portfolio-detail-name">${s.label}</span>
+            <div class="portfolio-detail-bar-track">
+              <div class="portfolio-detail-bar-fill" style="width:${barW}%;background:${s.color}"></div>
+            </div>
+            <span class="portfolio-detail-count">${s.value.toLocaleString()}</span>
+            <span class="portfolio-detail-pct">${pct}%</span>
+          </div>`;
+      }).join('')}
+      <div class="portfolio-detail-row portfolio-detail-row--total">
+        <span class="portfolio-detail-name">Total</span>
+        <div class="portfolio-detail-bar-track"></div>
+        <span class="portfolio-detail-count">${total.toLocaleString()}</span>
+        <span class="portfolio-detail-pct">100%</span>
+      </div>
+    </div>
+  `;
+
+  // History stacked bar chart
+  const allMonths = getAvailableMonths(perfData.monthly);
+  const histMonths = allMonths.slice(-6);
+  const histLabels = histMonths.map(m => formatMonthLabel(m));
+
+  const entData   = histMonths.map(m => perfData.monthly[m]?.[currentAmId]?.ent   ?? null);
+  const mmData    = histMonths.map(m => perfData.monthly[m]?.[currentAmId]?.mm    ?? null);
+  const corpData  = histMonths.map(m => perfData.monthly[m]?.[currentAmId]?.corp  ?? null);
+  const otherData = histMonths.map(m => perfData.monthly[m]?.[currentAmId]?.other ?? null);
+  const partialFlags = histMonths.map(m => !!perfData.monthly[m]?.working_days_completed);
+
+  const alpha = (base, i) => partialFlags[i] ? base.replace(')', ', 0.5)').replace('rgb', 'rgba') : base;
+
+  if (charts['chart-portfolio-history']) charts['chart-portfolio-history'].destroy();
+  const ctx = document.getElementById('chart-portfolio-history').getContext('2d');
+  charts['chart-portfolio-history'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: histLabels,
+      datasets: [
+        {
+          label: 'Enterprise',
+          data: entData,
+          backgroundColor: histMonths.map((_, i) => alpha('rgb(26,158,63)', i)),
+          borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 },
+          stack: 'portfolio'
+        },
+        {
+          label: 'Mid-Market',
+          data: mmData,
+          backgroundColor: histMonths.map((_, i) => alpha('rgb(59,130,246)', i)),
+          borderRadius: 0,
+          stack: 'portfolio'
+        },
+        {
+          label: 'Corporate',
+          data: corpData,
+          backgroundColor: histMonths.map((_, i) => alpha('rgb(99,102,241)', i)),
+          borderRadius: 0,
+          stack: 'portfolio'
+        },
+        {
+          label: 'Others',
+          data: otherData,
+          backgroundColor: histMonths.map((_, i) => alpha('rgb(156,163,175)', i)),
+          borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
+          stack: 'portfolio'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+        tooltip: {
+          mode: 'index',
+          callbacks: {
+            footer: items => {
+              const total = items.reduce((s, i) => s + (i.parsed.y || 0), 0);
+              return `Total: ${total.toLocaleString()} accounts`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 11 }, color: '#9ca3af' } },
+        y: { stacked: true, grid: { color: '#f3f4f6' }, ticks: { font: { size: 11 }, color: '#9ca3af' } }
+      }
+    }
+  });
 }
 
 init();
