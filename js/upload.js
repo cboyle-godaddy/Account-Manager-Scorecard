@@ -17,6 +17,7 @@ async function initUploadPage() {
   setupDropzone();
   document.getElementById('download-template-btn').addEventListener('click', generateTemplate);
   document.getElementById('clear-data-btn')?.addEventListener('click', clearData);
+  initGitHubPanel();
 }
 
 function checkActiveBanner() {
@@ -87,7 +88,7 @@ function parseWorkbook(wb) {
   rows.forEach((row, i) => {
     const month   = String(row['Month'] ?? '').trim();
     const amName  = String(row['AM Name'] ?? '').trim();
-    if (!month || !amName || month === 'Month') return; // skip header rows
+    if (!month || !amName || month === 'Month') return;
 
     const am = amsData.account_managers.find(a => a.name === amName);
     if (!am) { errors.push(`Row ${i + 2}: AM name "${amName}" not found — check spelling`); return; }
@@ -137,7 +138,6 @@ function parseWorkbook(wb) {
     });
   }
 
-  // Merge new data over existing
   mergedPerfData = {
     ...perfData,
     monthly:      { ...perfData.monthly, ...newMonthly },
@@ -212,12 +212,21 @@ function applyData() {
     perf: mergedPerfData,
   }));
 
-  // Show download JSON option
-  document.getElementById('download-json-pending').style.display = 'none';
-  document.getElementById('download-json-area').style.display = 'block';
-  document.getElementById('download-json-btn').addEventListener('click', downloadJSON);
+  // Show Step 3 share actions
+  document.getElementById('share-pending').style.display = 'none';
+  const shareActions = document.getElementById('share-actions');
+  shareActions.style.display = 'flex';
 
-  // Update active banner
+  // Show publish button if GitHub is configured
+  const ghSettings = loadGitHubSettings();
+  if (ghSettings.pat && ghSettings.repo) {
+    const publishArea = document.getElementById('publish-github-area');
+    publishArea.style.display = 'flex';
+    document.getElementById('publish-github-btn').onclick = handlePublish;
+  }
+
+  document.getElementById('download-json-btn').onclick = downloadJSON;
+
   checkActiveBanner();
   document.getElementById('preview-area').innerHTML = `
     <div class="upload-success-banner">
@@ -237,6 +246,142 @@ function downloadJSON() {
   URL.revokeObjectURL(a.href);
 }
 
+// ---- GitHub integration ----
+const GH_STORAGE_KEY = 'am_scorecard_github';
+
+function loadGitHubSettings() {
+  try { return JSON.parse(localStorage.getItem(GH_STORAGE_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function saveGitHubSettings(settings) {
+  localStorage.setItem(GH_STORAGE_KEY, JSON.stringify(settings));
+}
+
+function stringToBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  const binStr = Array.from(bytes, b => String.fromCharCode(b)).join('');
+  return btoa(binStr);
+}
+
+async function publishToGitHub(jsonContent) {
+  const { pat, repo, branch = 'main' } = loadGitHubSettings();
+  if (!pat || !repo) throw new Error('GitHub not configured');
+
+  const path = 'data/performance.json';
+  const apiBase = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const headers = {
+    'Authorization': `Bearer ${pat}`,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json',
+  };
+
+  // Get current file SHA (required for updates; 404 is fine for new files)
+  const getRes = await fetch(apiBase, { headers });
+  let sha;
+  if (getRes.ok) {
+    sha = (await getRes.json()).sha;
+  } else if (getRes.status === 401) {
+    throw new Error('Invalid token — check your Personal Access Token');
+  } else if (getRes.status === 403) {
+    throw new Error('Permission denied — token needs Contents: Read and write');
+  } else if (getRes.status === 404 && !getRes.url.includes(repo)) {
+    throw new Error(`Repository "${repo}" not found — check the owner/name`);
+  }
+
+  const putRes = await fetch(apiBase, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: `Update performance data — ${new Date().toLocaleDateString()}`,
+      content: stringToBase64(jsonContent),
+      branch,
+      ...(sha ? { sha } : {}),
+    }),
+  });
+
+  if (!putRes.ok) {
+    const err = await putRes.json().catch(() => ({}));
+    if (putRes.status === 401) throw new Error('Invalid token — check your Personal Access Token');
+    if (putRes.status === 403) throw new Error('Permission denied — token needs Contents: Read and write');
+    throw new Error(err.message || `GitHub API error ${putRes.status}`);
+  }
+
+  return await putRes.json();
+}
+
+async function handlePublish() {
+  if (!mergedPerfData) return;
+  const btn = document.getElementById('publish-github-btn');
+  const statusEl = document.getElementById('publish-status');
+
+  btn.disabled = true;
+  btn.textContent = 'Publishing…';
+  statusEl.innerHTML = '';
+
+  try {
+    const result = await publishToGitHub(JSON.stringify(mergedPerfData, null, 2));
+    const commitUrl = result.commit?.html_url || '#';
+    statusEl.innerHTML = `
+      <div class="publish-status-success">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        Published! <a href="${commitUrl}" target="_blank" rel="noopener">View commit →</a>
+        <span class="publish-status-note">Team will see updates in ~60 seconds.</span>
+      </div>`;
+    btn.textContent = 'Published ✓';
+  } catch (err) {
+    statusEl.innerHTML = `<div class="publish-status-error">${err.message}</div>`;
+    btn.disabled = false;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg> Publish to GitHub`;
+  }
+}
+
+function initGitHubPanel() {
+  const settings = loadGitHubSettings();
+
+  const form          = document.getElementById('github-connect-form');
+  const connectedState = document.getElementById('github-connected-state');
+  const connectedRepo  = document.getElementById('github-connected-repo');
+
+  function showConnected(repo) {
+    form.style.display = 'none';
+    connectedState.style.display = 'flex';
+    connectedRepo.textContent = repo;
+  }
+
+  function showForm() {
+    connectedState.style.display = 'none';
+    form.style.display = 'block';
+  }
+
+  if (settings.pat && settings.repo) {
+    document.getElementById('gh-pat').value    = settings.pat;
+    document.getElementById('gh-repo').value   = settings.repo;
+    document.getElementById('gh-branch').value = settings.branch || 'main';
+    showConnected(settings.repo);
+  }
+
+  document.getElementById('gh-save-btn').addEventListener('click', () => {
+    const pat    = document.getElementById('gh-pat').value.trim();
+    const repo   = document.getElementById('gh-repo').value.trim();
+    const branch = document.getElementById('gh-branch').value.trim() || 'main';
+    if (!pat || !repo) { alert('Please enter both the token and repo name.'); return; }
+    saveGitHubSettings({ pat, repo, branch });
+    showConnected(repo);
+  });
+
+  document.getElementById('gh-disconnect-btn').addEventListener('click', () => {
+    localStorage.removeItem(GH_STORAGE_KEY);
+    document.getElementById('gh-pat').value    = '';
+    document.getElementById('gh-repo').value   = '';
+    document.getElementById('gh-branch').value = 'main';
+    showForm();
+    // Hide publish area if showing
+    document.getElementById('publish-github-area').style.display = 'none';
+  });
+}
+
 // ---- Template generation ----
 function generateTemplate() {
   const wb = XLSX.utils.book_new();
@@ -244,7 +389,6 @@ function generateTemplate() {
   // ---- Monthly Data sheet ----
   const now   = new Date();
   const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const amNames = amsData.account_managers.map(a => a.name);
 
   const headers = [
     'Month', 'AM Name', 'Worked Days', 'Working Days in Month',
@@ -254,14 +398,12 @@ function generateTemplate() {
     'Enterprise', 'Mid-Market', 'Corporate', 'Other'
   ];
 
-  // Pre-fill goal from ams.json
   const monthlyRows = [headers];
   amsData.account_managers.forEach(am => {
     monthlyRows.push([month, am.name, '', 21, '', '', '', '', '', am.portfolio_gcr_goal || '', '', '', '', '', '']);
   });
 
   const monthlySheet = XLSX.utils.aoa_to_sheet(monthlyRows);
-  // Column widths
   monthlySheet['!cols'] = [
     {wch:10},{wch:22},{wch:13},{wch:22},{wch:45},
     {wch:8},{wch:20},{wch:8},{wch:12},
@@ -274,12 +416,13 @@ function generateTemplate() {
   const qHeaders = ['Quarter', 'AM Name', 'Unique Accounts (Quarterly)', 'Is Partial? (yes/no)'];
   const currentQ = `${now.getFullYear()}-Q${Math.ceil((now.getMonth() + 1) / 3)}`;
   const qRows = [qHeaders];
-  amNames.forEach(name => qRows.push([currentQ, name, '', 'yes']));
+  amsData.account_managers.forEach(am => qRows.push([currentQ, am.name, '', 'yes']));
   const qSheet = XLSX.utils.aoa_to_sheet(qRows);
   qSheet['!cols'] = [{wch:12},{wch:22},{wch:28},{wch:20}];
   XLSX.utils.book_append_sheet(wb, qSheet, 'Quarterly PC');
 
   // ---- Instructions sheet ----
+  const amNames = amsData.account_managers.map(a => a.name);
   const instructions = [
     ['AM Scorecard — Data Upload Instructions'],
     [''],
@@ -305,7 +448,7 @@ function generateTemplate() {
     ['TIPS'],
     ['- You can include multiple months in one upload — just add more rows'],
     ['- Existing months in the app will be replaced by what you upload'],
-    ['- After uploading, use "Download Updated performance.json" to share with the whole team via GitHub'],
+    ['- Use "Publish to GitHub" on the upload page to push data to the whole team in one click'],
   ];
   const instrSheet = XLSX.utils.aoa_to_sheet(instructions);
   instrSheet['!cols'] = [{wch:42},{wch:80}];
