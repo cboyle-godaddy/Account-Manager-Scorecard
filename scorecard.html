@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AM Scorecard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect width="32" height="32" rx="6" fill="#1a9e3f"/>
+            <path d="M8 16a8 8 0 1 1 16 0 8 8 0 0 1-16 0zm8-5.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z" fill="white"/>
+            <circle cx="16" cy="16" r="2.5" fill="white"/>
+          </svg>
+          <span class="logo-brand">GoDaddy</span>
+          <span class="logo-divider">|</span>
+          <span class="logo-product">Business Care AM Scorecard</span>
+        </div>
+        <a href="index.html" class="back-link">
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          All AMs
+        </a>
+      </div>
+    </header>
+
+    <div class="scorecard-subheader">
+      <div class="scorecard-subheader-inner">
+        <div class="am-identity">
+          <div class="am-avatar" id="am-avatar">JC</div>
+          <div>
+            <h1 class="am-name" id="am-name">Loading…</h1>
+            <span class="am-level-badge" id="am-level">AM II</span>
+          </div>
+        </div>
+        <div class="period-controls">
+          <label for="sc-month-select" class="sr-only">Month</label>
+          <select id="sc-month-select" class="form-select form-select--compact"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-nav-wrapper">
+      <div class="tab-nav">
+        <button class="tab-btn tab-btn--active" data-tab="current">Current Month</button>
+        <button class="tab-btn" data-tab="history">Historical View</button>
+      </div>
+    </div>
+
+    <main class="scorecard-main" id="scorecard-main">
+      <!-- Current Month Tab -->
+      <div class="tab-panel" id="tab-current">
+
+        <div class="partial-month-banner" id="partial-banner" style="display:none;">
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+          </svg>
+          <span id="partial-banner-text">Month in progress — showing MTD data through <strong id="partial-days-text"></strong> of <strong id="partial-total-text"></strong> working days.</span>
+        </div>
+
+        <section class="section">
+          <h2 class="section-title">MPE Metrics</h2>
+          <div class="metrics-grid" id="mpe-grid">
+            <!-- Metric cards injected by JS -->
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">iGCR — 3-Month Rolling</h2>
+          <div class="igcr-rolling-card" id="igcr-rolling-card">
+            <!-- Injected by JS -->
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Portfolio GCR Goal
+            <span class="section-title-note">— from portfolio performance source</span>
+          </h2>
+          <div class="gcr-card" id="gcr-card">
+            <!-- Injected by JS -->
+          </div>
+        </section>
+
+      </div>
+
+      <!-- History Tab -->
+      <div class="tab-panel" id="tab-history" style="display:none;">
+
+        <section class="section">
+          <h2 class="section-title">Performance Trends <span class="section-title-note">— last 6 months</span></h2>
+          <div class="history-charts-grid">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <span class="chart-title">Completed Activities</span>
+                <span class="chart-target-label">Target: 300/mo</span>
+              </div>
+              <canvas id="chart-ca" height="180"></canvas>
+            </div>
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <span class="chart-title">Portfolio Coverage</span>
+                <span class="chart-target-label">Target: 25% monthly</span>
+              </div>
+              <canvas id="chart-pc" height="180"></canvas>
+            </div>
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <span class="chart-title">Opportunities Created</span>
+                <span class="chart-target-label">Target: 25/mo</span>
+              </div>
+              <canvas id="chart-oc" height="180"></canvas>
+            </div>
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <span class="chart-title">iGCR (Monthly)</span>
+                <span class="chart-target-label">Target: $10k/mo</span>
+              </div>
+              <canvas id="chart-igcr" height="180"></canvas>
+            </div>
+            <div class="chart-card chart-card--wide">
+              <div class="chart-card-header">
+                <span class="chart-title">Portfolio GCR vs Goal</span>
+                <span class="chart-target-label">% of monthly goal</span>
+              </div>
+              <canvas id="chart-gcr" height="160"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Monthly Summary</h2>
+          <div class="table-wrapper">
+            <table class="summary-table" id="summary-table">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>CA <small>≥300</small></th>
+                  <th>PC% <small>≥25%</small></th>
+                  <th>OC <small>≥25</small></th>
+                  <th>iGCR <small>≥$10k</small></th>
+                  <th>Rolling iGCR <small>≥$30k</small></th>
+                  <th>Portfolio GCR</th>
+                </tr>
+              </thead>
+              <tbody id="summary-tbody">
+                <!-- Injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/scorecard.js"></script>
+</body>
+</html>

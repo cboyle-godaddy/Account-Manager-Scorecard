@@ -1,0 +1,39 @@
+{
+  "account_managers": [
+    {
+      "id": "arivera",
+      "name": "Alex Rivera",
+      "level": "AM II",
+      "portfolio_size": 380,
+      "portfolio_gcr_goal": 290000
+    },
+    {
+      "id": "jchen",
+      "name": "Jordan Chen",
+      "level": "AM III",
+      "portfolio_size": 400,
+      "portfolio_gcr_goal": 450000
+    },
+    {
+      "id": "tkim",
+      "name": "Taylor Kim",
+      "level": "AM I",
+      "portfolio_size": 265,
+      "portfolio_gcr_goal": 185000
+    },
+    {
+      "id": "mdavis",
+      "name": "Morgan Davis",
+      "level": "AM II",
+      "portfolio_size": 370,
+      "portfolio_gcr_goal": 305000
+    },
+    {
+      "id": "cthompson",
+      "name": "Casey Thompson",
+      "level": "AM III",
+      "portfolio_size": 395,
+      "portfolio_gcr_goal": 420000
+    }
+  ]
+}

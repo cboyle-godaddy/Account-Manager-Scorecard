@@ -1,0 +1,82 @@
+{
+  "_notes": {
+    "monthly": "CA, OC, iGCR are from Salesforce. portfolio_gcr_actual and portfolio_gcr_goal are from the portfolio performance GCR source.",
+    "quarterly_pc": "Unique accounts across entire quarter (deduplicated) — cannot be derived from monthly data alone.",
+    "partial_month": "working_days_completed is set only on the current in-progress month."
+  },
+  "monthly": {
+    "2025-12": {
+      "working_days": 23,
+      "arivera":   { "worked_days": 23, "ca": 318, "pc_unique_accounts": 111, "oc": 28, "igcr": 11500, "portfolio_gcr_actual": 271000 },
+      "jchen":     { "worked_days": 23, "ca": 412, "pc_unique_accounts": 154, "oc": 42, "igcr": 22000, "portfolio_gcr_actual": 465000 },
+      "tkim":      { "worked_days": 23, "ca": 278, "pc_unique_accounts":  59, "oc": 20, "igcr":  7200, "portfolio_gcr_actual": 148000 },
+      "mdavis":    { "worked_days": 23, "ca": 288, "pc_unique_accounts":  88, "oc": 23, "igcr":  9100, "portfolio_gcr_actual": 252000 },
+      "cthompson": { "worked_days": 23, "ca": 398, "pc_unique_accounts": 159, "oc": 44, "igcr": 23500, "portfolio_gcr_actual": 452000 }
+    },
+    "2026-01": {
+      "working_days": 22,
+      "arivera":   { "worked_days": 22, "ca": 302, "pc_unique_accounts": 98,  "oc": 26, "igcr": 10200, "portfolio_gcr_actual": 261000 },
+      "jchen":     { "worked_days": 22, "ca": 385, "pc_unique_accounts": 141, "oc": 38, "igcr": 19500, "portfolio_gcr_actual": 458000 },
+      "tkim":      { "worked_days": 22, "ca": 285, "pc_unique_accounts":  64, "oc": 21, "igcr":  7800, "portfolio_gcr_actual": 155000 },
+      "mdavis":    { "worked_days": 22, "ca": 302, "pc_unique_accounts":  94, "oc": 25, "igcr": 10800, "portfolio_gcr_actual": 268000 },
+      "cthompson": { "worked_days": 22, "ca": 375, "pc_unique_accounts": 149, "oc": 40, "igcr": 21200, "portfolio_gcr_actual": 438000 }
+    },
+    "2026-02": {
+      "working_days": 20,
+      "arivera":   { "worked_days": 20, "ca": 295, "pc_unique_accounts": 99,  "oc": 22, "igcr":  8800, "portfolio_gcr_actual": 245000 },
+      "jchen":     { "worked_days": 20, "ca": 368, "pc_unique_accounts": 139, "oc": 36, "igcr": 18200, "portfolio_gcr_actual": 442000 },
+      "tkim":      { "worked_days": 18, "ca": 261, "pc_unique_accounts":  58, "oc": 18, "igcr":  6100, "portfolio_gcr_actual": 139000 },
+      "mdavis":    { "worked_days": 20, "ca": 271, "pc_unique_accounts":  82, "oc": 21, "igcr":  8200, "portfolio_gcr_actual": 239000 },
+      "cthompson": { "worked_days": 20, "ca": 362, "pc_unique_accounts": 144, "oc": 38, "igcr": 19800, "portfolio_gcr_actual": 421000 }
+    },
+    "2026-03": {
+      "working_days": 22,
+      "arivera":   { "worked_days": 22, "ca": 325, "pc_unique_accounts": 116, "oc": 31, "igcr": 13500, "portfolio_gcr_actual": 278000 },
+      "jchen":     { "worked_days": 22, "ca": 421, "pc_unique_accounts": 160, "oc": 44, "igcr": 24500, "portfolio_gcr_actual": 489000 },
+      "tkim":      { "worked_days": 22, "ca": 298, "pc_unique_accounts":  68, "oc": 24, "igcr":  8500, "portfolio_gcr_actual": 162000 },
+      "mdavis":    { "worked_days": 22, "ca": 315, "pc_unique_accounts": 100, "oc": 28, "igcr": 11500, "portfolio_gcr_actual": 275000 },
+      "cthompson": { "worked_days": 22, "ca": 408, "pc_unique_accounts": 167, "oc": 46, "igcr": 25100, "portfolio_gcr_actual": 468000 }
+    },
+    "2026-04": {
+      "working_days": 22,
+      "arivera":   { "worked_days": 22, "ca": 310, "pc_unique_accounts": 106, "oc": 27, "igcr": 12000, "portfolio_gcr_actual": 285000 },
+      "jchen":     { "worked_days": 22, "ca": 398, "pc_unique_accounts": 150, "oc": 41, "igcr": 21800, "portfolio_gcr_actual": 472000 },
+      "tkim":      { "worked_days": 22, "ca": 305, "pc_unique_accounts":  72, "oc": 26, "igcr":  9200, "portfolio_gcr_actual": 171000 },
+      "mdavis":    { "worked_days": 22, "ca": 291, "pc_unique_accounts":  91, "oc": 24, "igcr":  9800, "portfolio_gcr_actual": 258000 },
+      "cthompson": { "worked_days": 22, "ca": 385, "pc_unique_accounts": 154, "oc": 42, "igcr": 22400, "portfolio_gcr_actual": 445000 }
+    },
+    "2026-05": {
+      "working_days": 21,
+      "working_days_completed": 15,
+      "arivera":   { "worked_days": 15, "ca": 215, "pc_unique_accounts":  92, "oc": 19, "igcr":  8200, "portfolio_gcr_actual": 198000 },
+      "jchen":     { "worked_days": 15, "ca": 285, "pc_unique_accounts": 105, "oc": 28, "igcr": 15200, "portfolio_gcr_actual": 312000 },
+      "tkim":      { "worked_days": 15, "ca": 198, "pc_unique_accounts":  52, "oc": 15, "igcr":  5800, "portfolio_gcr_actual": 118000 },
+      "mdavis":    { "worked_days": 15, "ca": 208, "pc_unique_accounts":  83, "oc": 17, "igcr":  7100, "portfolio_gcr_actual": 188000 },
+      "cthompson": { "worked_days": 15, "ca": 272, "pc_unique_accounts": 108, "oc": 25, "igcr": 16200, "portfolio_gcr_actual": 298000 }
+    }
+  },
+  "quarterly_pc": {
+    "2025-Q4": {
+      "arivera":   { "unique_accounts": 248 },
+      "jchen":     { "unique_accounts": 338 },
+      "tkim":      { "unique_accounts": 195 },
+      "mdavis":    { "unique_accounts": 262 },
+      "cthompson": { "unique_accounts": 348 }
+    },
+    "2026-Q1": {
+      "arivera":   { "unique_accounts": 258 },
+      "jchen":     { "unique_accounts": 332 },
+      "tkim":      { "unique_accounts": 198 },
+      "mdavis":    { "unique_accounts": 265 },
+      "cthompson": { "unique_accounts": 345 }
+    },
+    "2026-Q2": {
+      "_partial": true,
+      "arivera":   { "unique_accounts": 162 },
+      "jchen":     { "unique_accounts": 218 },
+      "tkim":      { "unique_accounts": 108 },
+      "mdavis":    { "unique_accounts": 145 },
+      "cthompson": { "unique_accounts": 224 }
+    }
+  }
+}
