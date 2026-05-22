@@ -1,5 +1,46 @@
 // Shared utilities loaded on every page
 
+// ---- Theme ----
+function isDarkMode() {
+  return document.documentElement.getAttribute('data-theme') === 'dark';
+}
+
+function applyTheme(dark) {
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  if (btn) btn.innerHTML = dark ? moonIcon() : sunIcon();
+  document.dispatchEvent(new CustomEvent('themechange', { detail: { dark } }));
+}
+
+function sunIcon() {
+  return `<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/></svg>`;
+}
+
+function moonIcon() {
+  return `<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>`;
+}
+
+function injectThemeToggle() {
+  const inner = document.querySelector('.header-inner');
+  if (!inner || document.getElementById('theme-toggle')) return;
+  const btn = document.createElement('button');
+  btn.id = 'theme-toggle';
+  btn.className = 'theme-toggle-btn';
+  const dark = isDarkMode();
+  btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  btn.innerHTML = dark ? moonIcon() : sunIcon();
+  btn.addEventListener('click', () => applyTheme(!isDarkMode()));
+  // Insert before the back-link if present, otherwise append
+  const backLink = inner.querySelector('.back-link');
+  backLink ? inner.insertBefore(btn, backLink) : inner.appendChild(btn);
+}
+
+function getChartGridColor()  { return isDarkMode() ? '#334155' : '#f3f4f6'; }
+function getChartTickColor()  { return isDarkMode() ? '#64748b' : '#9ca3af'; }
+function getChartLineColor()  { return isDarkMode() ? 'rgba(34,184,74,0.15)' : 'rgba(26,158,63,0.12)'; }
+
 const MONTHS_DISPLAY = {
   '01':'Jan','02':'Feb','03':'Mar','04':'Apr',
   '05':'May','06':'Jun','07':'Jul','08':'Aug',
@@ -141,6 +182,9 @@ async function initPickerPage() {
     window.location.href = `scorecard.html?${params}`;
   });
 }
+
+// Inject toggle on every page as soon as DOM is ready
+document.addEventListener('DOMContentLoaded', injectThemeToggle);
 
 if (document.getElementById('am-select')) {
   initPickerPage();

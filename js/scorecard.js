@@ -364,7 +364,7 @@ function renderHistory(am) {
 
   // Chart colors
   const GREEN = 'rgb(26,158,63)';
-  const GREEN_LIGHT = 'rgba(26,158,63,0.12)';
+  const GREEN_LIGHT = getChartLineColor();
   const AMBER = 'rgb(217,119,6)';
   const PARTIAL_ALPHA = 0.45;
 
@@ -413,8 +413,8 @@ function renderHistory(am) {
     maintainAspectRatio: true,
     plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
     scales: {
-      x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#9ca3af' } },
-      y: { grid: { color: '#f3f4f6' }, ticks: { font: { size: 11 }, color: '#9ca3af' } }
+      x: { grid: { display: false }, ticks: { font: { size: 11 }, color: getChartTickColor() } },
+      y: { grid: { color: getChartGridColor() }, ticks: { font: { size: 11 }, color: getChartTickColor() } }
     }
   };
 
@@ -705,5 +705,14 @@ function renderPortfolioBreakdown(am) {
     }
   });
 }
+
+// Re-render charts when theme changes so grid/tick colors update
+document.addEventListener('themechange', () => {
+  const am = allAMs?.account_managers.find(a => a.id === currentAmId);
+  if (!am) return;
+  const activeTab = document.querySelector('.tab-btn--active')?.dataset.tab;
+  if (activeTab === 'history')   renderHistory(am);
+  if (activeTab === 'portfolio') renderPortfolioBreakdown(am);
+});
 
 init();
