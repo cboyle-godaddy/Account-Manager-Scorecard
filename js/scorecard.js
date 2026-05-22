@@ -322,7 +322,8 @@ function renderIGCRRolling(currentD, isPartial) {
 }
 
 function renderGCRCard(am, d, isPartial) {
-  const pct = (d.portfolio_gcr_actual / am.portfolio_gcr_goal) * 100;
+  const gcrGoal = d.portfolio_gcr_goal || am.portfolio_gcr_goal;
+  const pct = (d.portfolio_gcr_actual / gcrGoal) * 100;
   const status = getStatus(pct, 100);
   const fillColor = status === 'met' ? 'var(--green-500)' : status === 'at-risk' ? 'var(--amber-500)' : 'var(--red-500)';
   const fill = Math.min(pct, 100);
@@ -333,7 +334,7 @@ function renderGCRCard(am, d, isPartial) {
       <span class="gcr-label">Portfolio GCR${isPartial ? ' (MTD)' : ''}</span>
       <div class="gcr-values">
         <span class="gcr-actual">${formatCurrency(d.portfolio_gcr_actual)}</span>
-        <span class="gcr-target">/ ${formatCurrency(am.portfolio_gcr_goal)} goal</span>
+        <span class="gcr-target">/ ${formatCurrency(gcrGoal)} goal</span>
       </div>
     </div>
     <div class="gcr-card-right">
@@ -481,7 +482,8 @@ function renderHistory(am) {
   // Portfolio GCR % of goal
   const gcrPcts = months.map(m => {
     const actual = get(m, 'portfolio_gcr_actual');
-    return actual !== null ? (actual / am.portfolio_gcr_goal) * 100 : null;
+    const goal = perfData.monthly[m]?.[currentAmId]?.portfolio_gcr_goal || am.portfolio_gcr_goal;
+    return actual !== null ? (actual / goal) * 100 : null;
   });
   destroyAndCreate('chart-gcr', {
     type: 'line',
@@ -521,7 +523,8 @@ function renderSummaryTable(am, months) {
     const proratedCA = MPE.CA_TARGET * (workedDays / daysTotal);
     const proratedOC = MPE.OC_TARGET * (workedDays / daysTotal);
     const pcPct = (d.pc_unique_accounts / am.portfolio_size) * 100;
-    const gcrPct = (d.portfolio_gcr_actual / am.portfolio_gcr_goal) * 100;
+    const gcrGoal = d.portfolio_gcr_goal || am.portfolio_gcr_goal;
+    const gcrPct = (d.portfolio_gcr_actual / gcrGoal) * 100;
 
     // Rolling iGCR: sum of this month + prev 2
     const idx = allMonths.indexOf(m);

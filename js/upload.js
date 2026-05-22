@@ -98,7 +98,7 @@ function parseWorkbook(wb) {
       if (wdc > 0) newMonthly[month].working_days_completed = wdc;
     }
 
-    newMonthly[month][am.id] = {
+    const entry = {
       worked_days:          num(row['Worked Days'], newMonthly[month].working_days),
       ca:                   num(row['CA'], 0),
       pc_unique_accounts:   num(row['PC Unique Accounts'], 0),
@@ -110,6 +110,9 @@ function parseWorkbook(wb) {
       corp:                 num(row['Corporate'], 0),
       other:                num(row['Other'], 0),
     };
+    const goalVal = num(row['Portfolio GCR Goal ($)'], -1);
+    if (goalVal >= 0) entry.portfolio_gcr_goal = goalVal;
+    newMonthly[month][am.id] = entry;
   });
 
   if (errors.length) { showUploadError(errors.join('\n')); return; }
@@ -166,6 +169,7 @@ function showPreview(newMonthly) {
         <td>${d.pc_unique_accounts}</td>
         <td>${d.oc}</td>
         <td>${formatCurrency(d.igcr, true)}</td>
+        <td>${d.portfolio_gcr_goal != null ? formatCurrency(d.portfolio_gcr_goal, true) : '—'}</td>
         <td>${formatCurrency(d.portfolio_gcr_actual, true)}</td>
       </tr>`;
     });
@@ -181,7 +185,7 @@ function showPreview(newMonthly) {
         <table class="summary-table">
           <thead><tr>
             <th>Month</th><th>AM</th><th>CA</th><th>PC Unique</th>
-            <th>OC</th><th>iGCR</th><th>Portfolio GCR</th>
+            <th>OC</th><th>iGCR</th><th>GCR Goal</th><th>GCR Actual</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
@@ -245,20 +249,23 @@ function generateTemplate() {
   const headers = [
     'Month', 'AM Name', 'Worked Days', 'Working Days in Month',
     'Working Days Completed (partial months only — leave blank if complete)',
-    'CA', 'PC Unique Accounts', 'OC', 'iGCR ($)', 'Portfolio GCR Actual ($)',
+    'CA', 'PC Unique Accounts', 'OC', 'iGCR ($)',
+    'Portfolio GCR Goal ($)', 'Portfolio GCR Actual ($)',
     'Enterprise', 'Mid-Market', 'Corporate', 'Other'
   ];
 
+  // Pre-fill goal from ams.json
   const monthlyRows = [headers];
-  amNames.forEach(name => {
-    monthlyRows.push([month, name, '', 21, '', '', '', '', '', '', '', '', '', '']);
+  amsData.account_managers.forEach(am => {
+    monthlyRows.push([month, am.name, '', 21, '', '', '', '', '', am.portfolio_gcr_goal || '', '', '', '', '', '']);
   });
 
   const monthlySheet = XLSX.utils.aoa_to_sheet(monthlyRows);
   // Column widths
   monthlySheet['!cols'] = [
     {wch:10},{wch:22},{wch:13},{wch:22},{wch:45},
-    {wch:8},{wch:20},{wch:8},{wch:12},{wch:24},
+    {wch:8},{wch:20},{wch:8},{wch:12},
+    {wch:24},{wch:24},
     {wch:12},{wch:13},{wch:12},{wch:10}
   ];
   XLSX.utils.book_append_sheet(wb, monthlySheet, 'Monthly Data');
@@ -286,6 +293,7 @@ function generateTemplate() {
     ['PC Unique Accounts', 'Number of unique portfolio accounts with at least one activity'],
     ['OC',              'Opportunities Created in Salesforce'],
     ['iGCR ($)',        'Cumulative Closed Won opportunity value for the month'],
+    ['Portfolio GCR Goal ($)', 'Monthly portfolio GCR goal — pre-filled from AM settings, update if changed'],
     ['Portfolio GCR Actual ($)', 'Actual portfolio GCR from portfolio performance report'],
     ['Enterprise / Mid-Market / Corporate / Other', 'Account counts by segment (should sum to ~portfolio size)'],
     [''],

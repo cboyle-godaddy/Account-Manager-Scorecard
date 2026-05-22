@@ -1102,6 +1102,153 @@ body {
 .portfolio-detail-row--total .portfolio-detail-pct   { color: var(--neutral-600, var(--neutral-700)); font-weight: 600; }
 
 /* =========================================================
+   Manager View
+   ========================================================= */
+.manager-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+.manager-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.manager-upload-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-700);
+  text-decoration: none;
+  padding: 7px 14px;
+  border: 1.5px solid var(--green-500);
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+.manager-upload-link:hover { background: var(--green-50); }
+.manager-upload-link svg { width: 14px; height: 14px; }
+
+/* Rollup tiles grid */
+.rollup-tiles {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.rollup-tile {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 16px 14px;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--neutral-200);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rollup-tile--met     { border-top: 3px solid var(--green-500); }
+.rollup-tile--at-risk { border-top: 3px solid var(--amber-500); }
+.rollup-tile--not-met { border-top: 3px solid var(--red-500); }
+
+.rollup-tile-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.rollup-tile-abbr {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--neutral-500);
+}
+
+.rollup-tile-target {
+  font-size: 10px;
+  color: var(--neutral-400);
+  text-align: right;
+}
+
+.rollup-tile-count {
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--neutral-900);
+  line-height: 1;
+}
+
+.rollup-tile-denom {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--neutral-400);
+  letter-spacing: -0.01em;
+}
+
+.rollup-tile-pct {
+  font-size: 12px;
+  color: var(--neutral-500);
+  font-weight: 500;
+}
+
+.rollup-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--neutral-100);
+  margin-top: 4px;
+}
+
+.rollup-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.02em;
+  cursor: default;
+  user-select: none;
+}
+.rollup-dot--met     { background: var(--green-100); color: var(--green-700); }
+.rollup-dot--at-risk { background: var(--amber-100); color: var(--amber-700); }
+.rollup-dot--not-met { background: var(--red-100);   color: var(--red-700);   }
+
+/* Team table AM link */
+.team-am-link {
+  color: var(--neutral-800);
+  text-decoration: none;
+  font-weight: 600;
+}
+.team-am-link:hover { color: var(--green-700); text-decoration: underline; }
+
+/* Picker manager link */
+.picker-manager-link { text-align: center; }
+.picker-manager-anchor {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-700);
+  text-decoration: none;
+  padding: 7px 16px;
+  border: 1.5px solid var(--green-500);
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+.picker-manager-anchor:hover { background: var(--green-50); }
+.picker-manager-anchor svg { width: 14px; height: 14px; }
+
+/* =========================================================
    Responsive
    ========================================================= */
 @media (max-width: 700px) {
@@ -1122,6 +1269,12 @@ body {
   .picker-main { align-items: flex-start; padding-top: 32px; }
   .portfolio-split-cards { grid-template-columns: 1fr; }
   .portfolio-detail-row { grid-template-columns: 100px 1fr 50px 40px; gap: 8px; }
+  .rollup-tiles { grid-template-columns: repeat(2, 1fr); }
+  .manager-section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+@media (min-width: 701px) and (max-width: 1000px) {
+  .rollup-tiles { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* =========================================================
@@ -1283,6 +1436,22 @@ body {
 [data-theme="dark"] .picker-title { color: #f1f5f9; }
 [data-theme="dark"] .picker-subtitle { color: #64748b; }
 [data-theme="dark"] .chip { background: #1e293b; border-color: #334155; color: #94a3b8; }
-[data-theme="dark"] .picker-upload-anchor { color: #64748b; }
-[data-theme="dark"] .picker-upload-anchor:hover { color: var(--green-500); }
 [data-theme="dark"] .metrics-info-label { color: #475569; }
+[data-theme="dark"] .picker-manager-anchor { color: var(--green-500); border-color: var(--green-500); }
+[data-theme="dark"] .picker-manager-anchor:hover { background: #052e16; }
+
+/* Manager view */
+[data-theme="dark"] .rollup-tile { background: #1e293b; border-color: #334155; }
+[data-theme="dark"] .rollup-tile-abbr { color: #64748b; }
+[data-theme="dark"] .rollup-tile-target { color: #475569; }
+[data-theme="dark"] .rollup-tile-count { color: #f1f5f9; }
+[data-theme="dark"] .rollup-tile-denom { color: #475569; }
+[data-theme="dark"] .rollup-tile-pct { color: #64748b; }
+[data-theme="dark"] .rollup-dots { border-top-color: #263548; }
+[data-theme="dark"] .rollup-dot--met     { background: #052e16; color: var(--green-500); }
+[data-theme="dark"] .rollup-dot--at-risk { background: #451a03; color: #fbbf24; }
+[data-theme="dark"] .rollup-dot--not-met { background: #2d0a0a; color: #f87171; }
+[data-theme="dark"] .team-am-link { color: #cbd5e1; }
+[data-theme="dark"] .team-am-link:hover { color: var(--green-500); }
+[data-theme="dark"] .manager-upload-link { color: var(--green-500); border-color: var(--green-500); }
+[data-theme="dark"] .manager-upload-link:hover { background: #052e16; }
