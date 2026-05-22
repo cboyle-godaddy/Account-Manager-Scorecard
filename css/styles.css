@@ -813,6 +813,164 @@ body {
 }
 
 /* =========================================================
+   Upload page
+   ========================================================= */
+.upload-main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.upload-container { display: flex; flex-direction: column; gap: 24px; }
+
+.upload-hero { text-align: center; margin-bottom: 4px; }
+.upload-title { font-size: 24px; font-weight: 700; color: var(--neutral-900); letter-spacing: -0.02em; margin-bottom: 8px; }
+.upload-subtitle { font-size: 14px; color: var(--neutral-500); line-height: 1.6; }
+
+.upload-active-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--green-50);
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--green-700);
+}
+.upload-active-banner svg { width: 18px; height: 18px; flex-shrink: 0; }
+.upload-active-banner span { flex: 1; }
+.upload-clear-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green-700);
+  background: none;
+  border: 1px solid var(--green-700);
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.upload-clear-btn:hover { background: var(--green-100); }
+
+.upload-step-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--neutral-200);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.upload-step-card--info { background: var(--neutral-50); }
+
+.upload-step-header { display: flex; align-items: flex-start; gap: 14px; }
+.upload-step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--green-600); color: var(--white);
+  font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.upload-step-title { font-size: 15px; font-weight: 700; color: var(--neutral-800); margin-bottom: 4px; }
+.upload-step-desc { font-size: 13px; color: var(--neutral-500); line-height: 1.5; }
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--neutral-700);
+  border: 1.5px solid var(--neutral-300, var(--neutral-200));
+}
+.btn-secondary:hover { background: var(--neutral-50); border-color: var(--neutral-400); }
+.btn-secondary-outline {
+  background: transparent;
+  color: var(--neutral-500);
+  border: 1.5px solid var(--neutral-200);
+}
+.btn-secondary-outline:hover { background: var(--neutral-50); }
+
+.upload-template-btn { align-self: flex-start; gap: 8px; }
+.upload-template-btn svg { width: 16px; height: 16px; }
+
+.upload-columns-list { display: flex; flex-direction: column; gap: 6px; }
+.upload-columns-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--neutral-400); }
+
+.drop-zone {
+  border: 2px dashed var(--neutral-300, var(--neutral-200));
+  border-radius: var(--radius);
+  padding: 36px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.drop-zone:hover, .drop-zone--active {
+  border-color: var(--green-500);
+  background: var(--green-50);
+}
+.drop-zone-icon { width: 48px; height: 48px; opacity: 0.4; }
+.drop-zone-text { font-size: 15px; font-weight: 600; color: var(--neutral-600, var(--neutral-700)); }
+.drop-zone-sub { font-size: 13px; color: var(--neutral-400); }
+.drop-zone-link { color: var(--green-600); text-decoration: underline; }
+
+.upload-error {
+  background: var(--red-100);
+  border: 1px solid #fca5a5;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--red-700);
+  white-space: pre-wrap;
+}
+
+.upload-preview-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--green-500);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.upload-preview-header { display: flex; align-items: baseline; justify-content: space-between; }
+.upload-preview-title { font-size: 14px; font-weight: 700; color: var(--neutral-800); }
+.upload-preview-note { font-size: 12px; color: var(--neutral-400); }
+.upload-preview-actions { display: flex; gap: 10px; }
+
+.upload-success-banner {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--green-50); border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm); padding: 14px 16px;
+  font-size: 14px; color: var(--green-700); font-weight: 500;
+}
+.upload-success-banner svg { width: 20px; height: 20px; flex-shrink: 0; }
+.upload-success-banner a { color: var(--green-700); font-weight: 700; }
+
+.upload-json-hint { font-size: 12px; color: var(--neutral-500); line-height: 1.5; }
+.upload-json-hint code { background: var(--neutral-100); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+
+.upload-source-banner {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--green-50); border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm); padding: 8px 14px;
+  font-size: 12px; color: var(--green-700);
+  margin-bottom: 20px;
+}
+.upload-source-banner svg { width: 16px; height: 16px; flex-shrink: 0; }
+.upload-source-banner a { color: var(--green-700); font-weight: 600; }
+
+.picker-upload-link { text-align: center; }
+.picker-upload-anchor {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: var(--neutral-500);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.picker-upload-anchor:hover { color: var(--green-600); }
+.picker-upload-anchor svg { width: 14px; height: 14px; }
+
+/* =========================================================
    Portfolio Breakdown Tab
    ========================================================= */
 

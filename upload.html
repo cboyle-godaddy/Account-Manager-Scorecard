@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Data — AM Scorecard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect width="32" height="32" rx="6" fill="#1a9e3f"/>
+            <path d="M8 16a8 8 0 1 1 16 0 8 8 0 0 1-16 0zm8-5.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z" fill="white"/>
+            <circle cx="16" cy="16" r="2.5" fill="white"/>
+          </svg>
+          <span class="logo-brand">GoDaddy</span>
+          <span class="logo-divider">|</span>
+          <span class="logo-product">Business Care AM Scorecard</span>
+        </div>
+        <a href="index.html" class="back-link">
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          Back
+        </a>
+      </div>
+    </header>
+
+    <main class="upload-main">
+      <div class="upload-container">
+
+        <div class="upload-hero">
+          <h1 class="upload-title">Upload Monthly Data</h1>
+          <p class="upload-subtitle">Download the template, fill in this month's numbers from Salesforce, then upload it here.</p>
+        </div>
+
+        <!-- Active data banner -->
+        <div id="active-data-banner" class="upload-active-banner" style="display:none;">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span id="active-data-text"></span>
+          <button id="clear-data-btn" class="upload-clear-btn">Clear</button>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="upload-step-card">
+          <div class="upload-step-header">
+            <span class="upload-step-num">1</span>
+            <div>
+              <h2 class="upload-step-title">Download the Template</h2>
+              <p class="upload-step-desc">Pre-filled with all AMs and the current month. Fill in the numbers from your Salesforce reports.</p>
+            </div>
+          </div>
+          <button id="download-template-btn" class="btn btn-secondary upload-template-btn">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+            Download Template (.xlsx)
+          </button>
+          <div class="upload-columns-list">
+            <p class="upload-columns-label">Template columns:</p>
+            <div class="upload-columns-chips">
+              <span class="chip">Month</span>
+              <span class="chip">AM Name</span>
+              <span class="chip">Worked Days</span>
+              <span class="chip">Working Days in Month</span>
+              <span class="chip">Working Days Completed <em>(partial only)</em></span>
+              <span class="chip">CA</span>
+              <span class="chip">PC Unique Accounts</span>
+              <span class="chip">OC</span>
+              <span class="chip">iGCR ($)</span>
+              <span class="chip">Portfolio GCR Actual ($)</span>
+              <span class="chip">Enterprise</span>
+              <span class="chip">Mid-Market</span>
+              <span class="chip">Corporate</span>
+              <span class="chip">Other</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="upload-step-card">
+          <div class="upload-step-header">
+            <span class="upload-step-num">2</span>
+            <div>
+              <h2 class="upload-step-title">Upload Your Filled Template</h2>
+              <p class="upload-step-desc">Drag and drop the file below, or click to browse. Accepts <strong>.xlsx</strong> and <strong>.csv</strong> files.</p>
+            </div>
+          </div>
+
+          <div class="drop-zone" id="drop-zone">
+            <svg class="drop-zone-icon" viewBox="0 0 48 48" fill="none">
+              <path d="M28 8H12a4 4 0 00-4 4v24a4 4 0 004 4h24a4 4 0 004-4V20L28 8z" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M28 8v12h12M24 28v-8M20 24l4-4 4 4" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p class="drop-zone-text">Drop your file here</p>
+            <p class="drop-zone-sub">or <span class="drop-zone-link">browse to upload</span></p>
+            <input type="file" id="file-input" accept=".xlsx,.csv" style="display:none;">
+          </div>
+
+          <div id="upload-error" class="upload-error" style="display:none;"></div>
+        </div>
+
+        <!-- Preview area -->
+        <div id="preview-area"></div>
+
+        <!-- Step 3 — sharing note -->
+        <div class="upload-step-card upload-step-card--info">
+          <div class="upload-step-header">
+            <span class="upload-step-num">3</span>
+            <div>
+              <h2 class="upload-step-title">Make It Visible to Everyone (Optional)</h2>
+              <p class="upload-step-desc">Uploaded data is saved to <strong>your browser only</strong>. To update the scorecard for the whole team, download the updated JSON files and commit them to GitHub.</p>
+            </div>
+          </div>
+          <div id="download-json-area" style="display:none;">
+            <button id="download-json-btn" class="btn btn-secondary upload-template-btn">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+              Download Updated performance.json
+            </button>
+            <p class="upload-json-hint">Commit this file to <code>data/performance.json</code> in your GitHub repo to update the scorecard for everyone.</p>
+          </div>
+          <p id="download-json-pending" class="upload-json-hint" style="color:var(--neutral-400);">Upload and apply data first to enable this.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/upload.js"></script>
+</body>
+</html>

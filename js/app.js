@@ -71,18 +71,43 @@ function getAvailableMonths(monthly) {
   return Object.keys(monthly).sort();
 }
 
+// Shared data loader: prefers localStorage upload over bundled JSON files
+async function loadAppData() {
+  const cached = localStorage.getItem('am_scorecard_data');
+  if (cached) {
+    try {
+      const data = JSON.parse(cached);
+      if (data.ams && data.perf) return [data.ams, data.perf, true];
+    } catch (e) {
+      localStorage.removeItem('am_scorecard_data');
+    }
+  }
+  const [ams, perf] = await Promise.all([
+    fetch('data/ams.json').then(r => r.json()),
+    fetch('data/performance.json').then(r => r.json())
+  ]);
+  return [ams, perf, false];
+}
+
 // ---- Index page bootstrap ----
 async function initPickerPage() {
-  let ams, perf;
+  let ams, perf, fromUpload;
   try {
-    [ams, perf] = await Promise.all([
-      fetch('data/ams.json').then(r => r.json()),
-      fetch('data/performance.json').then(r => r.json())
-    ]);
+    [ams, perf, fromUpload] = await loadAppData();
   } catch (e) {
     document.querySelector('.picker-card').innerHTML =
       '<p style="color:red;text-align:center">Failed to load data. Make sure you are serving this over HTTP (not file://).</p>';
     return;
+  }
+
+  if (fromUpload) {
+    const cached = JSON.parse(localStorage.getItem('am_scorecard_data'));
+    const date = new Date(cached.uploaded_at).toLocaleDateString();
+    const banner = document.getElementById('upload-data-banner');
+    if (banner) {
+      document.getElementById('upload-data-date').textContent = date;
+      banner.style.display = 'flex';
+    }
   }
 
   const amSelect = document.getElementById('am-select');

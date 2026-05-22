@@ -22,15 +22,25 @@ async function init() {
     return;
   }
 
+  let fromUpload;
   try {
-    [allAMs, perfData] = await Promise.all([
-      fetch('data/ams.json').then(r => r.json()),
-      fetch('data/performance.json').then(r => r.json())
-    ]);
+    [allAMs, perfData, fromUpload] = await loadAppData();
   } catch (e) {
     document.getElementById('scorecard-main').innerHTML =
       '<p style="color:red;padding:24px">Failed to load data. Serve this site over HTTP (e.g. <code>npx serve .</code>).</p>';
     return;
+  }
+
+  if (fromUpload) {
+    const cached = JSON.parse(localStorage.getItem('am_scorecard_data'));
+    const date = new Date(cached.uploaded_at).toLocaleDateString();
+    const banner = document.createElement('div');
+    banner.className = 'upload-source-banner';
+    banner.innerHTML = `
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+      Showing uploaded data (${date}) — <a href="upload.html">manage uploads</a>
+    `;
+    document.getElementById('scorecard-main').prepend(banner);
   }
 
   const am = allAMs.account_managers.find(a => a.id === currentAmId);
