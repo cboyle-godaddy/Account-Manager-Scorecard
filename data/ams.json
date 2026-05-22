@@ -1,39 +1,60 @@
 {
   "account_managers": [
     {
-      "id": "arivera",
-      "name": "Alex Rivera",
+      "id": "bashe",
+      "name": "Brian Ashe",
       "level": "AM II",
-      "portfolio_size": 380,
-      "portfolio_gcr_goal": 290000
+      "portfolio_size": 375,
+      "portfolio_gcr_goal": 295000
     },
     {
-      "id": "jchen",
-      "name": "Jordan Chen",
+      "id": "dmarsh",
+      "name": "Drew Marsh",
+      "level": "AM I",
+      "portfolio_size": 260,
+      "portfolio_gcr_goal": 185000
+    },
+    {
+      "id": "nahlen",
+      "name": "Nick Ahlen",
+      "level": "AM II",
+      "portfolio_size": 385,
+      "portfolio_gcr_goal": 285000
+    },
+    {
+      "id": "rmanwaring",
+      "name": "Rachel Manwaring",
+      "level": "AM I",
+      "portfolio_size": 255,
+      "portfolio_gcr_goal": 180000
+    },
+    {
+      "id": "rplata",
+      "name": "Robert Plata",
       "level": "AM III",
-      "portfolio_size": 400,
+      "portfolio_size": 395,
       "portfolio_gcr_goal": 450000
     },
     {
-      "id": "tkim",
-      "name": "Taylor Kim",
+      "id": "tfrangenberg",
+      "name": "Tanner Frangenberg",
+      "level": "AM I",
+      "portfolio_size": 270,
+      "portfolio_gcr_goal": 190000
+    },
+    {
+      "id": "tvillegas",
+      "name": "Tino Villegas",
       "level": "AM I",
       "portfolio_size": 265,
       "portfolio_gcr_goal": 185000
     },
     {
-      "id": "mdavis",
-      "name": "Morgan Davis",
+      "id": "tpothier",
+      "name": "Troy Pothier",
       "level": "AM II",
       "portfolio_size": 370,
-      "portfolio_gcr_goal": 305000
-    },
-    {
-      "id": "cthompson",
-      "name": "Casey Thompson",
-      "level": "AM III",
-      "portfolio_size": 395,
-      "portfolio_gcr_goal": 420000
+      "portfolio_gcr_goal": 290000
     }
   ]
 }
